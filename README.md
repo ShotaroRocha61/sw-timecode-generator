@@ -31,3 +31,10 @@ The trade-off: only four frame rates are supported (24, 25, 30, 29.97). Drop-fra
 - `parse_timecode` accepts both `:` and `;` as separators, but the `drop_frame` flag is set by the argument, not inferred from the separator. A drop-frame timecode parsed as non-drop will still parse -- it just won't apply drop-frame arithmetic.
 - Frame rates are matched as dict keys, so pass `29.97` (a float) or `24`/`25`/`30` (ints) exactly. `29.970000001` is not recognized.
 - Negative frame offsets raise rather than wrap to the previous day.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
